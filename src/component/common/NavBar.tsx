@@ -1,0 +1,132 @@
+"use client"
+
+import * as React from 'react';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from '@mui/material/IconButton';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useMediaQuery, useTheme } from '@mui/material';
+import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation';
+
+export default function NavBar() {
+  const theme = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [open, setOpen] = React.useState(!isMobile);
+
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
+
+  const menuItems = [
+    { text: "Menu Management", icon: <MenuBookIcon />, path: "/" },
+    { text: "Vacancies", icon: <FaceRetouchingNaturalIcon />, path: "/vacancies" },
+    { text: "News", icon: <NewspaperIcon />, path: "/news" },
+    { text: "Gallery", icon: <CollectionsIcon />, path: "/gallery" },
+    { text: "Promotions", icon: <LocalOfferIcon />, path: "/promotions" },
+  ];
+
+  const otherItems = [
+    { text: "Sign Out", icon: <LogoutIcon />, path: "/auth" },
+  ]
+
+  const handleMenuItemClick = (path: string) => {
+    router.push(path);
+    if (isMobile) {
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div>
+      {isMobile && (
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={toggleDrawer}
+          sx={{ 
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: theme.zIndex.drawer + 1
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+      )}
+      <Drawer 
+        variant={isMobile ? 'temporary' : 'permanent'}
+        open={open}
+        onClose={toggleDrawer}
+        hideBackdrop={!isMobile}
+        sx={{
+          width: { xs: 280, sm: 300 },
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: { xs: 280, sm: 300 },
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        {/* {DrawerList} */}
+        <List>
+            <ListItem style={{marginTop:20, marginBottom:20}}>
+                <Image 
+                    src="/images/logos/logo.png"
+                    alt='logo'
+                    width={300}
+                    height={100}
+                />
+            </ListItem>
+
+            <Divider />
+
+            {menuItems.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton 
+                  selected={pathname === item.path}
+                  onClick={() => handleMenuItemClick(item.path)}
+                >
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+
+            <Divider />
+
+            {otherItems.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton 
+                  selected={pathname === item.path}
+                  onClick={() => handleMenuItemClick(item.path)}
+                >
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+             
+        </List>
+      </Drawer>
+    </div>
+  );
+}
