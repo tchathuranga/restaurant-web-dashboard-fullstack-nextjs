@@ -4,47 +4,15 @@ import { SectionHeader } from "@/component/common/SectionHeader";
 import SearchBar from "@/component/common/SearchBar";
 import ContainerBox from "@/component/common/ContainerBox";
 import JobCard from "@/component/vacancies/JobCard";
+import { JOB_DATA } from "@/component/const/JobData";
+import { useState } from "react";
 
 export default function Vacancies() {
-  const jobData = [
-    {
-      title: "South Indian Cook",
-      location: "Colombo 5, Sri Lanka",
-      employmentType: "Full-Time",
-      experienceLevel: "2-5 Years",
-      availability: "Immediate",
-      skills: "Cooking, South Indian, Vegetarian",
-      additionalRequirements: ["Team Player", "Menu Development"]
-    },
-    {
-      title: "South Indian Cook",
-      location: "Colombo 5, Sri Lanka",
-      employmentType: "Full-Time",
-      experienceLevel: "2-5 Years",
-      availability: "Immediate",
-      skills: "Cooking, South Indian, Vegetarian",
-      additionalRequirements: ["Team Player", "Menu Development"]
-    },
-    {
-      title: "South Indian Cook",
-      location: "Colombo 5, Sri Lanka",
-      employmentType: "Full-Time",
-      experienceLevel: "2-5 Years",
-      availability: "Immediate",
-      skills: "Cooking, South Indian, Vegetarian",
-      additionalRequirements: ["Team Player", "Menu Development"]
-    },
-    {
-      title: "South Indian Cook",
-      location: "Colombo 5, Sri Lanka",
-      employmentType: "Full-Time",
-      experienceLevel: "2-5 Years",
-      availability: "Immediate",
-      skills: "Cooking, South Indian, Vegetarian",
-      additionalRequirements: ["Team Player", "Menu Development"]
-    }
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  ];
+  const filteredJobs = JOB_DATA.filter((job) =>
+    job.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="margin p-10">
@@ -55,11 +23,14 @@ export default function Vacancies() {
         onButtonClick={() => alert("Add New clicked!")}
       />
 
-      <SearchBar onSearchChange={() => { }} />
+      <SearchBar
+        searchValue={searchTerm}
+        onSearchChange={(value) => setSearchTerm(value)}
+      />
 
       <ContainerBox>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {jobData.map((job, index) => (
+          {filteredJobs.map((job, index) => (
             <JobCard
               key={index}
               title={job.title}
