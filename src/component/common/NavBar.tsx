@@ -19,11 +19,14 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useMediaQuery, useTheme } from '@mui/material';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
+import { useAppDispatch } from '@/redux/store';
+import { signout } from '@/redux/slice/authSlice';
 
 export default function NavBar() {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = React.useState(!isMobile);
 
@@ -39,12 +42,16 @@ export default function NavBar() {
     { text: "Promotions", icon: <LocalOfferIcon />, path: "/promotions" },
   ];
 
-  const otherItems = [
-    { text: "Sign Out", icon: <LogoutIcon />, path: "/auth" },
-  ]
-
   const handleMenuItemClick = (path: string) => {
     router.push(path);
+    if (isMobile) {
+      setOpen(false);
+    }
+  };
+
+  const handleSignOut = () => {
+    dispatch(signout());
+    router.push("/login");
     if (isMobile) {
       setOpen(false);
     }
@@ -111,19 +118,14 @@ export default function NavBar() {
 
             <Divider />
 
-            {otherItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton 
-                  selected={pathname === item.path}
-                  onClick={() => handleMenuItemClick(item.path)}
-                >
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleSignOut}>
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary="Sign Out" />
+              </ListItemButton>
+            </ListItem>
              
         </List>
       </Drawer>

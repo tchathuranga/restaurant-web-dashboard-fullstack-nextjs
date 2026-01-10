@@ -1,25 +1,21 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface SectionHeaderProps {
     title: string;
-    subtitle?: string;
     buttonLabel?: string;
     onButtonClick?: () => void;
 }
 
-export const SectionHeader: React.FC<SectionHeaderProps> = ({
-    title,
-    subtitle,
-    buttonLabel,
-    onButtonClick,
-}) => {
+const SectionHeader = ({ title, buttonLabel, onButtonClick }: SectionHeaderProps) => {
+    const authState = useSelector((state: RootState) => state.auth);
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-7 items-center px-4 sm:px-6 py-4 rounded-md mb-6 gap-4 sm:gap-0">
             <div className="col-span-1 sm:col-span-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-1">{title}</h2>
-                {subtitle && (
-                    <p className="text-sm text-gray-400">{subtitle}</p>
-                )}
+                <p className="text-sm text-gray-400">{`Hi, ${authState.user?.name || "User"}. Welcome to Sri Vihar Admin!`}</p>
             </div>
 
             <div className="col-span-1 sm:col-span-1">
@@ -41,3 +37,5 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         </div>
     );
 };
+
+export default SectionHeader;

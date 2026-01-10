@@ -1,6 +1,6 @@
 "use client"
 
-import { SectionHeader } from "@/component/common/SectionHeader";
+import SectionHeader from "@/component/common/SectionHeader";
 import ImageUploadBox from "@/component/common/ImageUploadBox";
 import ContainerBox from "@/component/common/ContainerBox";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -20,7 +20,6 @@ export default function Promotions() {
     <div className="margin p-10">
       <SectionHeader
         title="Promotions"
-        subtitle="Hi, Samantha. Welcome to Sri Vihar Admin!"
       />
 
       <ImageUploadBox />
