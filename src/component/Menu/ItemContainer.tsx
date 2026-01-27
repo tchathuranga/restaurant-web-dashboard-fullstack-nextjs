@@ -5,10 +5,12 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 interface ItemContainerProps {
     image : string ;
     title : string ;
-    imageAlt : string ;
+    imageAlt? : string ;
+    onDelete? : () => void | "" | undefined;
+    onUpdate? : () => void;
 }
 
-const ItemContainer = ({image, title, imageAlt} : ItemContainerProps ) => {
+const ItemContainer = ({image, title, imageAlt, onDelete, onUpdate} : ItemContainerProps ) => {
     return(
         <div
           className="rounded-xl shadow-md bg-white dark:bg-darkgray overflow-hidden hover:shadow-lg transition-shadow duration-200"
@@ -17,7 +19,7 @@ const ItemContainer = ({image, title, imageAlt} : ItemContainerProps ) => {
           <div className="w-full h-48 overflow-hidden bg-orange-100 flex items-center justify-center">
             <Image
               src={image}
-              alt={imageAlt}
+              alt={imageAlt? imageAlt : title}
               width={200}
               height={200}
               className="object-contain"
@@ -29,12 +31,12 @@ const ItemContainer = ({image, title, imageAlt} : ItemContainerProps ) => {
             {/* Action Buttons */}
             <div className="flex gap-4 mb-3">
               {/* update Button */}
-              <button className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center hover:bg-green-400 transition-colors">
+              <button onClick={onUpdate} className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center hover:bg-green-400 transition-colors">
                 <EditIcon style={{color:"white"}}/>
               </button>
               
               {/* Delete Button */}
-              <button className="w-10 h-10 rounded-full bg-red-700 flex items-center justify-center hover:bg-red-400 transition-colors">
+              <button onClick={onDelete} className="w-10 h-10 rounded-full bg-red-700 flex items-center justify-center hover:bg-red-400 transition-colors">
                 <DeleteOutlineIcon style={{color:"white"}}/>   
               </button>
             </div>
