@@ -185,7 +185,7 @@ export default function Editor({ onChange, initialValue = '' }: EditorProps) {
                 Copy HTML
               </button>
             </div>
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono border border-gray-700 whitespace-pre-wrap break-words">
+            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono border border-gray-700 whitespace-pre-wrap wrap-break-word">
               <code>{editor.getHTML()}</code>
             </pre>
           </div>
