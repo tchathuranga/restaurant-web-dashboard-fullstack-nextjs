@@ -523,7 +523,7 @@ export default function NewsFields() {
         ) : (
           <FormContainer
             actionLabel="Update"
-            title={"Update vacancy"}
+            title={"Update News Field"}
             onSave={handleUpdateSave}
             onDiscard={handleDiscardUpdate}
           >

@@ -71,3 +71,63 @@ export const uploadNewsImageToCloudinary = async (
     };
   }
 };
+
+export const uploadGalleryImageToCloudinary = async (
+  file: File,
+): Promise<UploadResponse> => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await fetch('/api/upload/gallery', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.error || 'Upload failed',
+      };
+    }
+    return {
+      success: true,
+      url: data.url,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || 'Upload failed',
+    };
+  }
+};
+
+export const uploadPromotionsImageToCloudinary = async (
+  file: File,
+): Promise<UploadResponse> => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await fetch('/api/upload/promotions', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.error || 'Upload failed',
+      };
+    }
+    return {
+      success: true,
+      url: data.url,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || 'Upload failed',
+    };
+  }
+};

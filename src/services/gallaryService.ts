@@ -55,7 +55,7 @@ export async function createGalleryItem(galleryItem: Omit<IGallery, '_id'>): Pro
 }
 
 // DELETE gallery item
-export async function deleteGalleryItem(id: string): Promise<ApiResponse<null>> {
+export async function deleteGalleryItem(id: string): Promise<ApiResponse<IGallery>> {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       method: 'DELETE',

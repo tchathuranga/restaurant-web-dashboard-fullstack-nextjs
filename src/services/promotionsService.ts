@@ -56,7 +56,7 @@ export async function createPromotion(promotion: Omit<PromotionProps, '_id' | 'c
 }
 
 // DELETE promotion
-export async function deletePromotion(id: string): Promise<ApiResponse<null>> {
+export async function deletePromotion(id: string): Promise<ApiResponse<PromotionProps>> {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       method: 'DELETE',
