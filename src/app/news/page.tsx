@@ -4,7 +4,6 @@ import SearchBar from "@/component/common/SearchBar";
 import SectionHeader from "@/component/common/SectionHeader";
 import ContainerBox from "@/component/common/ContainerBox";
 import NewsContainer from "@/component/news/NewsContainer";
-import { NEWS_DATA } from "@/component/const/newsData";
 import { useEffect, useRef, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import FormContainer from "@/component/common/FormContainer";
@@ -21,12 +20,10 @@ import {
 } from "@/services/newsService";
 import { ApiResponse } from "@/services/itemService";
 import { News } from "@/interfaces/News";
-import { set } from "mongoose";
 
 export default function NewsFields() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
-  const [html, setHtml] = useState<string>("<p>Enter the description</p>");
   const [imagePreview, setImagePreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [postError, setPostError] = useState<string>("");
