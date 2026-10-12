@@ -44,18 +44,20 @@ export default function LoginPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "linear-gradient(135deg, #4a1220 0%, #6b1d2a 55%, #c2410c 100%)",
       }}
     >
       <Container maxWidth="sm">
         <Paper
           elevation={10}
           sx={{
-            padding: 4,
+            padding: { xs: 3, sm: 5 },
+            backgroundColor: "#fffdf8",
+            borderTop: "4px solid #c9a227",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            borderRadius: 2,
+            borderRadius: 4,
           }}
         >
           <Image
@@ -70,6 +72,7 @@ export default function LoginPage() {
             component="h1"
             gutterBottom
             fontWeight="bold"
+            sx={{ color: "#6b1d2a", fontFamily: "var(--font-display), serif", textAlign: "center" }}
           >
             Sri Vihar Dashboard
           </Typography>
@@ -117,7 +120,16 @@ export default function LoginPage() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, py: 1.5 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                py: 1.5,
+                borderRadius: 3,
+                textTransform: "none",
+                fontWeight: 600,
+                background: "linear-gradient(135deg, #e85d04, #c2410c)",
+                "&:hover": { background: "linear-gradient(135deg, #c2410c, #9a3412)" },
+              }}
               disabled={isLoading}
             >
               {isLoading ? (

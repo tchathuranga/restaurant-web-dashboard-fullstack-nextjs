@@ -1,7 +1,6 @@
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import RowActions from "@/component/common/RowActions";
 
 interface JobCardProps {
     title: string;
@@ -21,36 +20,25 @@ export default function JobCard({
     onEdit
 }: JobCardProps) {
     return (
-        <div className="bg-green-50 rounded-lg p-6 flex flex-col gap-4 shadow-sm max-h-120 overflow-auto">
-            <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+        <div className="sv-panel p-6 flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-3">
+                <h3 className="text-2xl font-bold text-maroon leading-tight">{title}</h3>
+                <span className="shrink-0 text-xs font-semibold px-3 py-1 rounded-full bg-cream text-amber-800">
+                    {employmentType}
+                </span>
+            </div>
 
-            <div className="flex items-center gap-2 text-gray-600">
-                <LocationOnIcon className="text-gray-500" fontSize="small" />
+            <div className="flex items-center gap-1.5 text-ink-muted">
+                <LocationOnIcon fontSize="small" />
                 <span className="text-sm">{location}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-gray-600">
-                <AccessTimeIcon className="text-gray-500" fontSize="small" />
-                <span className="text-sm">{employmentType}</span>
-            </div>
-
-            <div 
-                className="flex flex-col gap-1 text-sm text-gray-700 prose prose-sm max-w-none"
+            <div
+                className="text-sm text-ink prose prose-sm max-w-none max-h-40 overflow-y-auto"
                 dangerouslySetInnerHTML={{ __html: description }}
             />
 
-            <div className="p-4 flex flex-col items-center">
-                <div className="flex gap-4 mb-3">
-                    <button onClick={onEdit} className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center hover:bg-green-400 transition-colors">
-                        <EditIcon style={{ color: "white" }} />
-                    </button>
-
-                    <button onClick={onDelete} className="w-10 h-10 rounded-full bg-red-700 flex items-center justify-center hover:bg-red-400 transition-colors">
-                        <DeleteOutlineIcon style={{ color: "white" }} />
-                    </button>
-                </div>
-            </div>
+            <RowActions onEdit={onEdit} onDelete={onDelete} className="mt-auto pt-3 border-t border-gold/30" />
         </div>
     );
 }
-

@@ -1,30 +1,43 @@
-import { FILTERS } from "@/component/const/Filters";
+import { ICategory } from "@/interfaces/Category";
 
 interface CategoriesProps {
+  categories: ICategory[];
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
+  /** Number of items per category name ("All" for the total) */
+  counts?: Record<string, number>;
 }
 
-const Categories = ({ selectedCategory, onCategorySelect }: CategoriesProps) => {
+const Categories = ({ categories, selectedCategory, onCategorySelect, counts }: CategoriesProps) => {
   return (
-    <div className="px-4 py-2 rounded-md mb-10">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      {FILTERS.map((i) => (
-        <button
-          key={i.id}
-          onClick={() => onCategorySelect(i.name)}
-          className={`px-2 py-1 rounded-full shadow-sm font-medium text-base transition border focus:outline-none ${
-            selectedCategory === i.name
-              ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700"
-              : "bg-white text-gray-700 border-transparent hover:bg-blue-50"
-          }`}
-          type="button"
-        >
-          {i.name}
-        </button>
-      ))}
-    </div>
+    <div className="px-1 py-2 mb-4">
+      <div className="flex flex-wrap gap-2.5" role="tablist" aria-label="Menu categories">
+        {[{ _id: "all", name: "All" }, ...categories].map((i) => {
+          const active = selectedCategory === i.name;
+          return (
+            <button
+              key={i._id}
+              role="tab"
+              aria-selected={active}
+              onClick={() => onCategorySelect(i.name)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm sm:text-base transition border ${
+                active
+                  ? "bg-gradient-to-br from-saffron to-saffron-deep text-ivory border-saffron-deep shadow-md"
+                  : "bg-white text-ink border-gold/50 hover:bg-cream hover:border-gold"
+              }`}
+              type="button"
+            >
+              {i.name}
+              {counts && (
+                <span className={`text-xs rounded-full px-2 py-0.5 ${active ? "bg-white/25" : "bg-cream text-ink-muted"}`}>
+                  {counts[i.name] ?? 0}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
+    </div>
   );
 };
 

@@ -12,28 +12,24 @@ const SectionHeader = ({ title, buttonLabel, onButtonClick }: SectionHeaderProps
     const authState = useSelector((state: RootState) => state.auth);
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-7 items-center px-4 sm:px-6 py-4 rounded-md mb-6 gap-4 sm:gap-0">
-            <div className="col-span-1 sm:col-span-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-1">{title}</h2>
-                <p className="text-sm text-gray-400">{`Hi, ${authState.user?.name || "User"}. Welcome to Sri Vihar Admin!`}</p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4 sm:px-6 py-5 mb-6 sv-panel">
+            <div>
+                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-amber-700 mb-1">Sri Vihar Admin</p>
+                <h2 className="text-3xl font-bold text-maroon">{title}</h2>
+                <p className="text-sm text-ink-muted mt-1">{`Hi, ${authState.user?.name || "User"}. Welcome back!`}</p>
             </div>
 
-            <div className="col-span-1 sm:col-span-1">
-                {buttonLabel && (
-                    <button
-                        onClick={onButtonClick}
-                        className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 border border-blue-100 rounded-md shadow-sm hover:bg-blue-50 transition w-full sm:w-auto"
-                    >
-                        <span className="flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
-                                <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-                        </span>
-                        {buttonLabel}
-                    </button>
-                )}
-            </div>
-
+            {buttonLabel && (
+                <button
+                    onClick={onButtonClick}
+                    className="sv-btn-primary flex items-center justify-center gap-2 px-5 py-2.5 w-full sm:w-auto"
+                >
+                    <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
+                        <path d="M8 3.333v9.334M3.333 8h9.334" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                    {buttonLabel}
+                </button>
+            )}
         </div>
     );
 };
