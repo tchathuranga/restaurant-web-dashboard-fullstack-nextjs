@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Item from '@/models/Item';
-import { Types } from 'mongoose';
-
+import { prisma, withLegacyId } from '@/lib/prisma';
+import { isNotFound } from '@/lib/apiErrors';
+import { ensureCategoriesSeeded } from '@/lib/menuCategories';
+import { getSubcategory } from '@/component/const/itemSubcategories';
 
 // GET single item by ID
 export async function GET(
@@ -10,22 +10,9 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
-
     const { id } = await context.params;
 
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid item ID',
-        },
-        { status: 400 }
-      );
-    }
-
-    const item = await Item.findById(id);
+    const item = await prisma.item.findUnique({ where: { id } });
 
     if (!item) {
       return NextResponse.json(
@@ -40,7 +27,7 @@ export async function GET(
     return NextResponse.json(
       {
         success: true,
-        data: item,
+        data: withLegacyId(item),
       },
       { status: 200 }
     );
@@ -61,46 +48,46 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
-
     const { id } = await context.params;
     const body = await request.json();
 
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
+    // Keep subcategory in step with title/category when the form doesn't supply one
+    if (!body.subcategory && body.title && body.category) {
+      body.subcategory = getSubcategory(body.title, body.category);
+    }
+
+    await ensureCategoriesSeeded();
+    if (
+      body.category !== undefined &&
+      !(await prisma.menuCategory.findUnique({ where: { name: String(body.category) } }))
+    ) {
+      return NextResponse.json({ success: false, error: 'Please select a valid category' }, { status: 400 });
+    }
+    if (body.title !== undefined && (!body.title || String(body.title).length > 100)) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid item ID',
-        },
+        { success: false, error: 'Title is required and cannot be more than 100 characters' },
         { status: 400 }
       );
     }
 
-    const item = await Item.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
+    const { image, title, description, price, imageAlt, category, subcategory } = body;
+    const item = await prisma.item.update({
+      where: { id },
+      data: { image, title, description, price, imageAlt, category, subcategory },
     });
-
-    if (!item) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Item not found',
-        },
-        { status: 404 }
-      );
-    }
 
     return NextResponse.json(
       {
         success: true,
-        data: item,
+        data: withLegacyId(item),
         message: 'Item updated successfully',
       },
       { status: 200 }
     );
   } catch (error: any) {
+    if (isNotFound(error)) {
+      return NextResponse.json({ success: false, error: 'Item not found' }, { status: 404 });
+    }
     return NextResponse.json(
       {
         success: false,
@@ -117,42 +104,22 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
-
     const { id } = await context.params;
 
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid item ID',
-        },
-        { status: 400 }
-      );
-    }
-
-    const item = await Item.findByIdAndDelete(id);
-
-    if (!item) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Item not found',
-        },
-        { status: 404 }
-      );
-    }
+    const item = await prisma.item.delete({ where: { id } });
 
     return NextResponse.json(
       {
         success: true,
-        data: item,
+        data: withLegacyId(item),
         message: 'Item deleted successfully',
       },
       { status: 200 }
     );
   } catch (error: any) {
+    if (isNotFound(error)) {
+      return NextResponse.json({ success: false, error: 'Item not found' }, { status: 404 });
+    }
     return NextResponse.json(
       {
         success: false,

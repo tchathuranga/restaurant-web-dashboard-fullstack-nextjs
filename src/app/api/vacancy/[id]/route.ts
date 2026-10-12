@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import { Types } from "mongoose";
-import Vacancy from "@/models/vacancy";
+import { prisma, withLegacyId } from "@/lib/prisma";
+import { isNotFound } from "@/lib/apiErrors";
 
 // GET single vacancy by ID
 export async function GET(
@@ -9,46 +8,24 @@ export async function GET(
   context: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
-
     const { id } = await context.params;
 
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid vacancy ID",
-        },
-        { status: 400 },
-      );
-    }
-
-    const vacancy = await Vacancy.findById(id);
+    const vacancy = await prisma.vacancy.findUnique({ where: { id } });
 
     if (!vacancy) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Vacancy not found",
-        },
+        { success: false, error: "Vacancy not found" },
         { status: 404 },
       );
     }
 
     return NextResponse.json(
-      {
-        success: true,
-        data: vacancy,
-      },
+      { success: true, data: withLegacyId(vacancy) },
       { status: 200 },
     );
   } catch (error: any) {
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to fetch vacancy",
-      },
+      { success: false, error: error.message || "Failed to fetch vacancy" },
       { status: 500 },
     );
   }
@@ -60,47 +37,23 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
-
     const { id } = await context.params;
 
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid vacancy ID",
-        },
-        { status: 400 },
-      );
-    }
-
-    const vacancy = await Vacancy.findByIdAndDelete(id);
-
-    if (!vacancy) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Vacancy not found",
-        },
-        { status: 404 },
-      );
-    }
+    const vacancy = await prisma.vacancy.delete({ where: { id } });
 
     return NextResponse.json(
-      {
-        success: true,
-        data: vacancy,
-        message: "Vacancy deleted successfully",
-      },
+      { success: true, data: withLegacyId(vacancy), message: "Vacancy deleted successfully" },
       { status: 200 },
     );
   } catch (error: any) {
+    if (isNotFound(error)) {
+      return NextResponse.json(
+        { success: false, error: "Vacancy not found" },
+        { status: 404 },
+      );
+    }
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to delete vacancy",
-      },
+      { success: false, error: error.message || "Failed to delete vacancy" },
       { status: 500 },
     );
   }
@@ -112,51 +65,27 @@ export async function PUT(
   context: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
-
     const { id } = await context.params;
-    const body = await request.json();
+    const { title, location, type, description } = await request.json();
 
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid vacancy ID",
-        },
-        { status: 400 },
-      );
-    }
-
-    const vacancy = await Vacancy.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
+    const vacancy = await prisma.vacancy.update({
+      where: { id },
+      data: { title, location, type, description },
     });
 
-    if (!vacancy) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Vacancy not found",
-        },
-        { status: 404 },
-      );
-    }
-
     return NextResponse.json(
-      {
-        success: true,
-        data: vacancy,
-        message: "Vacancy updated successfully",
-      },
+      { success: true, data: withLegacyId(vacancy), message: "Vacancy updated successfully" },
       { status: 200 },
     );
   } catch (error: any) {
+    if (isNotFound(error)) {
+      return NextResponse.json(
+        { success: false, error: "Vacancy not found" },
+        { status: 404 },
+      );
+    }
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to update vacancy",
-      },
+      { success: false, error: error.message || "Failed to update vacancy" },
       { status: 500 },
     );
   }

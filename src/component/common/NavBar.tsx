@@ -16,6 +16,7 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useMediaQuery, useTheme } from '@mui/material';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
@@ -40,6 +41,7 @@ export default function NavBar() {
     { text: "News", icon: <NewspaperIcon />, path: "/news" },
     { text: "Gallery", icon: <CollectionsIcon />, path: "/gallery" },
     { text: "Promotions", icon: <LocalOfferIcon />, path: "/promotions" },
+    { text: "Website Settings", icon: <SettingsIcon />, path: "/site-settings" },
   ];
 
   const handleMenuItemClick = (path: string) => {
@@ -69,7 +71,10 @@ export default function NavBar() {
             position: 'fixed',
             top: 16,
             left: 16,
-            zIndex: theme.zIndex.drawer + 1
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#6b1d2a',
+            backgroundColor: '#fffdf8',
+            boxShadow: '0 4px 12px rgba(74, 18, 32, 0.12)',
           }}
         >
           <MenuIcon />
@@ -86,7 +91,25 @@ export default function NavBar() {
           '& .MuiDrawer-paper': {
             width: { xs: 280, sm: 300 },
             boxSizing: 'border-box',
+            background: 'linear-gradient(180deg, #fffdf8 0%, #f8ede3 100%)',
+            borderRight: '1px solid rgba(201, 162, 39, 0.35)',
+            color: '#4a1220',
           },
+          '& .MuiListItemButton-root': {
+            mx: 1.5,
+            my: 0.5,
+            borderRadius: '12px',
+            fontWeight: 500,
+            '&:hover': { backgroundColor: '#fff1d6' },
+            '&.Mui-selected': {
+              background: 'linear-gradient(135deg, #e85d04, #c2410c)',
+              color: '#fff8f0',
+              boxShadow: '0 6px 14px rgba(194, 65, 12, 0.28)',
+              '& .MuiListItemIcon-root': { color: '#fff8f0' },
+            },
+          },
+          '& .MuiListItemIcon-root': { color: '#6b1d2a', minWidth: 40 },
+          '& .MuiDivider-root': { borderColor: 'rgba(201, 162, 39, 0.35)', my: 1 },
         }}
       >
         {/* {DrawerList} */}

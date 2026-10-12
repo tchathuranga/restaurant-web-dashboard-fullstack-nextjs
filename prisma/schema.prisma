@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ids are 36-char strings: existing MongoDB ObjectIds are kept as-is, new rows get a UUID
+
+model Item {
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  image       String   @db.VarChar(500)
+  title       String   @db.VarChar(100)
+  description String?  @db.Text
+  price       String?  @db.VarChar(50)
+  imageAlt    String?  @db.VarChar(255)
+  category    String   @db.VarChar(50)
+  subcategory String?  @db.VarChar(100)
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @db.DateTime(3)
+
+  @@index([category])
+  @@index([createdAt])
+  @@map("items")
+}
+
+model MenuCategory {
+  id            String            @id @default(uuid()) @db.VarChar(36)
+  name          String            @unique @db.VarChar(50)
+  order         Int               @default(0)
+  createdAt     DateTime          @default(now()) @db.DateTime(3)
+  updatedAt     DateTime          @updatedAt @db.DateTime(3)
+  subcategories MenuSubcategory[]
+
+  @@map("menu_categories")
+}
+
+model MenuSubcategory {
+  id         String       @id @default(uuid()) @db.VarChar(36)
+  categoryId String       @db.VarChar(36)
+  name       String       @db.VarChar(100)
+  order      Int          @default(0)
+  createdAt  DateTime     @default(now()) @db.DateTime(3)
+  updatedAt  DateTime     @updatedAt @db.DateTime(3)
+  category   MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, name])
+  @@map("menu_subcategories")
+}
+
+model Branch {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  name      String   @db.VarChar(100)
+  address   String   @db.VarChar(300)
+  hours     String   @db.VarChar(100)
+  phone     String   @db.VarChar(50)
+  uberUrl   String   @default("") @db.VarChar(500)
+  pickmeUrl String   @default("") @db.VarChar(500)
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @db.DateTime(3)
+  updatedAt DateTime @updatedAt @db.DateTime(3)
+
+  @@index([order])
+  @@map("branches")
+}
+
+model Gallery {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  image     String   @db.VarChar(500)
+  createdAt DateTime @default(now()) @db.DateTime(3)
+  updatedAt DateTime @updatedAt @db.DateTime(3)
+
+  @@index([createdAt])
+  @@map("gallery")
+}
+
+model News {
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  image       String   @db.VarChar(500)
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @db.DateTime(3)
+
+  @@index([createdAt])
+  @@map("news")
+}
+
+model Promotion {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  image     String   @db.VarChar(500)
+  createdAt DateTime @default(now()) @db.DateTime(3)
+  updatedAt DateTime @updatedAt @db.DateTime(3)
+
+  @@index([createdAt])
+  @@map("promotions")
+}
+
+model SiteBanner {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  page      String   @unique @db.VarChar(100)
+  images    Json
+  createdAt DateTime @default(now()) @db.DateTime(3)
+  updatedAt DateTime @updatedAt @db.DateTime(3)
+
+  @@map("site_banners")
+}
+
+model Vacancy {
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  title       String   @db.VarChar(255)
+  location    String   @db.VarChar(255)
+  type        String   @db.VarChar(100)
+  description String   @db.Text
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @db.DateTime(3)
+
+  @@index([createdAt])
+  @@map("vacancies")
+}

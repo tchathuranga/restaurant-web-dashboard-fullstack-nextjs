@@ -6,7 +6,11 @@ interface ContainerBoxProps{
 
 export default function ContainerBox({children} : ContainerBoxProps) {
   return (
-    <Box component="section" sx={{ p: 5, backgroundColor : "#F9F9F9", borderRadius: "16px" }}>
+    <Box
+      component="section"
+      className="sv-panel"
+      sx={{ p: { xs: 2, md: 4 }, backgroundColor: "#fffdf8" }}
+    >
       {children}
     </Box>
   );

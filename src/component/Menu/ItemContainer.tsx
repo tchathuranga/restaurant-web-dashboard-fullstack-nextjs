@@ -1,49 +1,32 @@
 import Image from "next/image";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import RowActions from "@/component/common/RowActions";
 
 interface ItemContainerProps {
     image : string ;
     title : string ;
     imageAlt? : string ;
-    onDelete? : () => void | "" | undefined;
+    onDelete? : () => void;
     onUpdate? : () => void;
 }
 
 const ItemContainer = ({image, title, imageAlt, onDelete, onUpdate} : ItemContainerProps ) => {
     return(
-        <div
-          className="rounded-xl shadow-md bg-white dark:bg-darkgray overflow-hidden hover:shadow-lg transition-shadow duration-200"
-        >
-          {/* Item Image Section with Orange-Yellow Background */}
-          <div className="w-full h-48 overflow-hidden bg-orange-100 flex items-center justify-center">
+        <div className="sv-panel overflow-hidden hover:-translate-y-1 hover:shadow-xl transition duration-200">
+          <div className="w-full h-44 overflow-hidden bg-gradient-to-b from-cream to-parchment flex items-center justify-center">
             <Image
               src={image}
-              alt={imageAlt? imageAlt : title}
+              alt={imageAlt && imageAlt !== "null" ? imageAlt : title}
               width={200}
               height={200}
-              className="object-contain"
+              className="object-contain h-full w-auto"
             />
           </div>
-          
-          {/* Action Buttons and Title */}
-          <div className="p-4 flex flex-col items-center">
-            {/* Action Buttons */}
-            <div className="flex gap-4 mb-3">
-              {/* update Button */}
-              <button onClick={onUpdate} className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center hover:bg-green-400 transition-colors">
-                <EditIcon style={{color:"white"}}/>
-              </button>
-              
-              {/* Delete Button */}
-              <button onClick={onDelete} className="w-10 h-10 rounded-full bg-red-700 flex items-center justify-center hover:bg-red-400 transition-colors">
-                <DeleteOutlineIcon style={{color:"white"}}/>   
-              </button>
-            </div>
-            
-            <h3 className="text-lg font-medium text-orange-600 italic text-center" style={{ fontFamily: 'cursive' }}>
+
+          <div className="p-4 flex flex-col items-center gap-3">
+            <h3 className="text-xl font-bold text-maroon text-center leading-tight">
               {title}
             </h3>
+            <RowActions onEdit={onUpdate} onDelete={onDelete} />
           </div>
         </div>
     )

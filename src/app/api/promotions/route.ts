@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import promotions from '@/models/promotions';
+import { prisma, withLegacyId } from '@/lib/prisma';
 
 // GET all promotions
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-    const promotionItems = await promotions.find().sort({ createdAt: -1 });
+    const rows = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json(
       {
         success: true,
-        data: promotionItems,
+        data: rows.map(withLegacyId),
       },
       { status: 200 }
     );
@@ -28,12 +26,11 @@ export async function GET(request: NextRequest) {
 // POST create a new promotion
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
     const body = await request.json();
     const { image } = body;
     // Validation
     if (!image) {
-        return NextResponse.json(
+      return NextResponse.json(
         {
           success: false,
           error: 'Please provide all required fields',
@@ -41,13 +38,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const promotionItem = await promotions.create({
-      image
-    });
+    const created = await prisma.promotion.create({ data: { image } });
     return NextResponse.json(
       {
         success: true,
-        data: promotionItem,
+        data: withLegacyId(created),
       },
       { status: 201 }
     );

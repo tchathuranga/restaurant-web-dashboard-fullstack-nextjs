@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import gallery from '@/models/gallery';
+import { prisma, withLegacyId } from '@/lib/prisma';
 
-// GET all in gallery
+// GET all gallery items
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-    const galleryItems = await gallery.find().sort({ createdAt: -1 });
+    const rows = await prisma.gallery.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json(
       {
         success: true,
-        data: galleryItems,
+        data: rows.map(withLegacyId),
       },
       { status: 200 }
     );
@@ -28,12 +26,11 @@ export async function GET(request: NextRequest) {
 // POST create a new gallery item
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
     const body = await request.json();
     const { image } = body;
     // Validation
     if (!image) {
-        return NextResponse.json(
+      return NextResponse.json(
         {
           success: false,
           error: 'Please provide all required fields',
@@ -41,13 +38,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const galleryItem = await gallery.create({
-      image
-    });
+    const created = await prisma.gallery.create({ data: { image } });
     return NextResponse.json(
       {
-        success: true,  
-        data: galleryItem,
+        success: true,
+        data: withLegacyId(created),
       },
       { status: 201 }
     );
@@ -61,4 +56,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

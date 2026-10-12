@@ -1,51 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import { Types } from "mongoose";
-import News from "@/models/news";
+import { prisma, withLegacyId } from "@/lib/prisma";
+import { isNotFound } from "@/lib/apiErrors";
 
 // GET single news by ID
 export async function GET(
   request: NextRequest,
-    context: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
     const { id } = await context.params;
-
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid news ID",
-        },
-        { status: 400 },
-      );
-    }
-    const newsItem = await News.findById(id);
+    const newsItem = await prisma.news.findUnique({ where: { id } });
 
     if (!newsItem) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "News item not found",
-        },
+        { success: false, error: "News item not found" },
         { status: 404 },
       );
     }
     return NextResponse.json(
-      {
-        success: true,
-        data: newsItem,
-      },
+      { success: true, data: withLegacyId(newsItem) },
       { status: 200 },
     );
   } catch (error: any) {
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to fetch news item",
-      },
+      { success: false, error: error.message || "Failed to fetch news item" },
       { status: 500 },
     );
   }
@@ -54,45 +32,24 @@ export async function GET(
 // DELETE news by ID
 export async function DELETE(
   request: NextRequest,
-    context: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
     const { id } = await context.params;
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
+    const deletedNews = await prisma.news.delete({ where: { id } });
+    return NextResponse.json(
+      { success: true, data: withLegacyId(deletedNews) },
+      { status: 200 },
+    );
+  } catch (error: any) {
+    if (isNotFound(error)) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid news ID",
-        },
-        { status: 400 },
-      );
-    }
-    const deletedNews = await News.findByIdAndDelete(id);
-
-    if (!deletedNews) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "News item not found",
-        },
+        { success: false, error: "News item not found" },
         { status: 404 },
       );
     }
     return NextResponse.json(
-      {
-        success: true,
-        data: deletedNews,
-      },
-      { status: 200 },
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to delete news item",
-      },
+      { success: false, error: error.message || "Failed to delete news item" },
       { status: 500 },
     );
   }
@@ -101,59 +58,35 @@ export async function DELETE(
 // PUT update news by ID
 export async function PUT(
   request: NextRequest,
-    context: { params: Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
     const { id } = await context.params;
-    const body = await request.json();
-    const { title, description, image } = body;
-    // Validate MongoDB ObjectId
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid news ID",
-        },
-        { status: 400 },
-      );
-    }
+    const { title, description, image } = await request.json();
     // Validation
     if (!title || !description || !image) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Please provide all required fields",
-        },
+        { success: false, error: "Please provide all required fields" },
         { status: 400 },
       );
     }
-    const updatedNews = await News.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
+    const updatedNews = await prisma.news.update({
+      where: { id },
+      data: { title, description, image },
     });
-    if (!updatedNews) {
+    return NextResponse.json(
+      { success: true, data: withLegacyId(updatedNews) },
+      { status: 200 },
+    );
+  } catch (error: any) {
+    if (isNotFound(error)) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "News item not found",
-        },
+        { success: false, error: "News item not found" },
         { status: 404 },
       );
     }
     return NextResponse.json(
-      {
-        success: true,
-        data: updatedNews,
-      },
-      { status: 200 },
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to update news item",
-      },
+      { success: false, error: error.message || "Failed to update news item" },
       { status: 500 },
     );
   }
