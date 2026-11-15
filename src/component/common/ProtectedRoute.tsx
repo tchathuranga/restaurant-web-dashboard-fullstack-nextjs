@@ -2,8 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAppSelector } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { signout, sessionRestored } from "@/redux/slice/authSlice";
 import { CircularProgress, Box } from "@mui/material";
+
+function FullPageSpinner() {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
 
 export default function ProtectedRoute({
   children,
@@ -12,68 +28,54 @@ export default function ProtectedRoute({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
-  const [isMounted, setIsMounted] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
+
+  // The remembered login can outlive the server session (expiry, sign-out in another tab),
+  // so drop it when the server no longer recognises the cookie.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/me")
+      .then(async (response) => {
+        if (response.status === 401) {
+          dispatch(signout());
+        } else if (response.ok) {
+          const result = await response.json();
+          dispatch(sessionRestored(result.data.username));
+        }
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        if (!cancelled) setSessionChecked(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [dispatch]);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    // Wait for component to mount and Redux to initialize
-    if (!isMounted || isLoading) {
+    if (!sessionChecked || isLoading || pathname === "/login") {
       return;
     }
-
-    // Don't protect the login page - allow access
-    if (pathname === "/login") {
-      return;
-    }
-
-    // If not authenticated and not on login page, redirect to login
     if (!isAuthenticated) {
       router.push("/login");
     }
-  }, [isAuthenticated, isLoading, isMounted, pathname, router]);
+  }, [isAuthenticated, isLoading, sessionChecked, pathname, router]);
 
-  // Show loading spinner while checking authentication or during initial mount
-  if (!isMounted || isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+  if (!sessionChecked) {
+    return <FullPageSpinner />;
   }
 
-  // If on login page, always show it (no protection needed)
+  // The login page is always reachable
   if (pathname === "/login") {
     return <>{children}</>;
   }
 
-  // If not authenticated, show loading while redirect happens
+  // Not signed in: keep showing the spinner while the redirect happens
   if (!isAuthenticated) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <FullPageSpinner />;
   }
 
-  // User is authenticated, render children
   return <>{children}</>;
 }
-

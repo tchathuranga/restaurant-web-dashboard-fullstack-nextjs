@@ -51,7 +51,9 @@ export default function NavBar() {
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    // Clear the server session first, otherwise /login would bounce straight back to the dashboard
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
     dispatch(signout());
     router.push("/login");
     if (isMobile) {

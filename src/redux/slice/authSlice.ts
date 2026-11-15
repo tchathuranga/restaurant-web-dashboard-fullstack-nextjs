@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
   id: string;
@@ -14,23 +14,6 @@ interface AuthState {
   error: string | null;
 }
 
-const HARDCODED_USERS = [
-  {
-    id: "1",
-    username: "admin",
-    password: "admin123",
-    email: "admin@srivihar.com",
-    name: "Admin User",
-  },
-  {
-    id: "2",
-    username: "user",
-    password: "user123",
-    email: "user@srivihar.com",
-    name: "Regular User",
-  },
-];
-
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
@@ -38,26 +21,28 @@ const initialState: AuthState = {
   error: null,
 };
 
+// Credentials are checked on the server, which sets an httpOnly session cookie.
+// This state only mirrors that session for the UI; it grants no access by itself.
 export const signin = createAsyncThunk(
   "auth/signin",
   async (
     { username, password }: { username: string; password: string },
     { rejectWithValue }
   ) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const result = await response.json().catch(() => null);
 
-    const user = HARDCODED_USERS.find(
-      (u) => u.username === username && u.password === password
-    );
-
-    if (user) {
-      return {
-        username: user.username,
-        email: user.email,
-        name: user.name,
-      };
-    } else {
-      return rejectWithValue("Invalid username or password");
+      if (!response.ok || !result?.success) {
+        return rejectWithValue(result?.error || "Sign in failed");
+      }
+      return { username: result.data.username as string };
+    } catch {
+      return rejectWithValue("Could not reach the server");
     }
   }
 );
@@ -66,6 +51,12 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    // The server confirmed a valid session cookie, so adopt it even if the remembered state was lost
+    sessionRestored: (state, action: PayloadAction<string>) => {
+      state.isAuthenticated = true;
+      state.error = null;
+      state.user = { id: action.payload, username: action.payload, email: "", name: action.payload };
+    },
     signout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
@@ -82,12 +73,11 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = true;
         state.error = null;
-        const hardcodedUser = HARDCODED_USERS.find(
-          (u) => u.username === action.payload.username
-        );
         state.user = {
-          id: hardcodedUser?.id || "",
-          ...action.payload,
+          id: action.payload.username,
+          username: action.payload.username,
+          email: "",
+          name: action.payload.username,
         };
       })
       .addCase(signin.rejected, (state, action) => {
@@ -99,6 +89,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { signout } = authSlice.actions;
+export const { signout, sessionRestored } = authSlice.actions;
 export default authSlice.reducer;
-
