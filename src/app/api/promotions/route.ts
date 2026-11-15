@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
+import { errorMessage } from '@/server/http';
+import { prisma, withLegacyId } from '@/server/prisma';
 
 // GET all promotions
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const rows = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json(
@@ -12,11 +13,11 @@ export async function GET(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch promotions',
+        error: errorMessage(error, 'Failed to fetch promotions'),
       },
       { status: 500 }
     );
@@ -46,11 +47,11 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to create promotion',
+        error: errorMessage(error, 'Failed to create promotion'),
       },
       { status: 500 }
     );

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { SUBCATEGORY_MAX, cleanName, isDuplicate } from '@/lib/menuCategories';
+import { errorMessage } from '@/server/http';
+import { prisma } from '@/server/prisma';
+import { SUBCATEGORY_MAX, cleanName, isDuplicate } from '@/server/menuCategories';
 
 // POST add a subcategory to a category
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
@@ -17,13 +18,13 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
       data: { categoryId: id, name, order: (last._max.order ?? -1) + 1 },
     });
     return NextResponse.json({ success: true, data: { _id: created.id, name: created.name } }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     if (isDuplicate(error)) {
       return NextResponse.json(
         { success: false, error: 'This category already has a subcategory with that name' },
         { status: 409 }
       );
     }
-    return NextResponse.json({ success: false, error: error.message || 'Failed to create subcategory' }, { status: 500 });
+    return NextResponse.json({ success: false, error: errorMessage(error, 'Failed to create subcategory') }, { status: 500 });
   }
 }

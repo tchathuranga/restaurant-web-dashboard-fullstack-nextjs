@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
-import { isNotFound } from '@/lib/apiErrors';
-import { validateBranchBody } from '@/lib/branchValidation';
+import { prisma, withLegacyId } from '@/server/prisma';
+import { errorMessage, isNotFound } from '@/server/http';
+import { validateBranchBody } from '@/server/branchValidation';
 
 // PUT update a branch
 export async function PUT(
@@ -22,12 +22,12 @@ export async function PUT(
       { success: true, data: withLegacyId(branch), message: 'Branch updated successfully' },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json({ success: false, error: 'Branch not found' }, { status: 404 });
     }
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to update branch' },
+      { success: false, error: errorMessage(error, 'Failed to update branch') },
       { status: 500 }
     );
   }
@@ -47,12 +47,12 @@ export async function DELETE(
       { success: true, data: withLegacyId(branch), message: 'Branch deleted successfully' },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json({ success: false, error: 'Branch not found' }, { status: 404 });
     }
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to delete branch' },
+      { success: false, error: errorMessage(error, 'Failed to delete branch') },
       { status: 500 }
     );
   }

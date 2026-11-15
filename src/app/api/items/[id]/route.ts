@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
-import { isNotFound } from '@/lib/apiErrors';
-import { ensureCategoriesSeeded } from '@/lib/menuCategories';
-import { getSubcategory } from '@/component/const/itemSubcategories';
+import { prisma, withLegacyId } from '@/server/prisma';
+import { errorMessage, isNotFound } from '@/server/http';
+import { ensureCategoriesSeeded } from '@/server/menuCategories';
+import { getSubcategory } from '@/constants/itemSubcategories';
 
 // GET single item by ID
 export async function GET(
@@ -31,11 +31,11 @@ export async function GET(
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch item',
+        error: errorMessage(error, 'Failed to fetch item'),
       },
       { status: 500 }
     );
@@ -84,14 +84,14 @@ export async function PUT(
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json({ success: false, error: 'Item not found' }, { status: 404 });
     }
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to update item',
+        error: errorMessage(error, 'Failed to update item'),
       },
       { status: 500 }
     );
@@ -116,14 +116,14 @@ export async function DELETE(
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json({ success: false, error: 'Item not found' }, { status: 404 });
     }
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to delete item',
+        error: errorMessage(error, 'Failed to delete item'),
       },
       { status: 500 }
     );

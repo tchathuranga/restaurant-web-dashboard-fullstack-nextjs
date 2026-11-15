@@ -5,7 +5,7 @@ import {
   checkCredentials,
   createSessionToken,
   isAuthConfigured,
-} from '@/lib/auth';
+} from '@/server/auth';
 
 export const dynamic = 'force-dynamic';
 

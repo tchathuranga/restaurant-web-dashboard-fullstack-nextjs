@@ -1,17 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import SearchBar from "@/component/common/SearchBar";
-import SectionHeader from "@/component/common/SectionHeader";
-import ContainerBox from "@/component/common/ContainerBox";
-import PageShell from "@/component/common/PageShell";
-import ConfirmDialog from "@/component/common/ConfirmDialog";
-import { EmptyState, ErrorState, LoadingState } from "@/component/common/StateViews";
-import { useToast } from "@/component/common/Toast";
-import NewsContainer from "@/component/news/NewsContainer";
-import NewsFormDialog from "@/component/news/NewsFormDialog";
+import SearchBar from "@/components/common/SearchBar";
+import SectionHeader from "@/components/common/SectionHeader";
+import ContainerBox from "@/components/common/ContainerBox";
+import PageShell from "@/components/common/PageShell";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState, ErrorState, LoadingState } from "@/components/common/StateViews";
+import { useToast } from "@/components/common/Toast";
+import NewsContainer from "@/components/news/NewsContainer";
+import NewsFormDialog from "@/components/news/NewsFormDialog";
 import { deleteNews, getAllNews } from "@/services/newsService";
-import { News } from "@/interfaces/News";
+import { News } from "@/types/news";
 
 export default function NewsFields() {
   const toast = useToast();

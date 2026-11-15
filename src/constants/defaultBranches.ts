@@ -1,4 +1,4 @@
-import { IBranch } from "@/interfaces/branch";
+import { IBranch } from "@/types/branch";
 
 // The branches the website shows until some are saved; used by "Import current branches"
 export const DEFAULT_BRANCHES: IBranch[] = [

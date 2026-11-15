@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
-import FormContainer from "@/component/common/FormContainer";
-import Field from "@/component/common/Field";
-import Editor from "@/component/common/Editor";
-import { useToast } from "@/component/common/Toast";
-import { Vacancy } from "@/interfaces/vacancy";
+import FormContainer from "@/components/common/FormContainer";
+import Field from "@/components/common/Field";
+import Editor from "@/components/common/Editor";
+import { useToast } from "@/components/common/Toast";
+import { Vacancy } from "@/types/vacancy";
 import { createVacancy, updateVacancy } from "@/services/vacancyService";
 
 interface VacancyFormDialogProps {

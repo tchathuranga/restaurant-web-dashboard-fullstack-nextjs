@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import ContainerBox from "@/component/common/ContainerBox";
-import ConfirmDialog from "@/component/common/ConfirmDialog";
-import ImagePicker from "@/component/common/ImagePicker";
-import RowActions from "@/component/common/RowActions";
-import { EmptyState, ErrorState, LoadingState } from "@/component/common/StateViews";
-import { useToast } from "@/component/common/Toast";
-import { UploadResponse } from "@/services/uploadService";
+import ContainerBox from "@/components/common/ContainerBox";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import ImagePicker from "@/components/common/ImagePicker";
+import RowActions from "@/components/common/RowActions";
+import { EmptyState, ErrorState, LoadingState } from "@/components/common/StateViews";
+import { useToast } from "@/components/common/Toast";
+import { UploadResponse } from "@/types/api";
 
 interface LibraryImage {
   _id?: string;

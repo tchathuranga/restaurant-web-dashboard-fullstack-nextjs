@@ -1,21 +1,21 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import SectionHeader from "@/component/common/SectionHeader";
-import Categories from "@/component/Menu/Categories";
-import SearchBar from "@/component/common/SearchBar";
-import ContainerBox from "@/component/common/ContainerBox";
-import ItemContainer from "@/component/Menu/ItemContainer";
-import ItemFormDialog from "@/component/Menu/ItemFormDialog";
-import ConfirmDialog from "@/component/common/ConfirmDialog";
-import PageShell from "@/component/common/PageShell";
-import { EmptyState, ErrorState, LoadingState } from "@/component/common/StateViews";
-import { useToast } from "@/component/common/Toast";
+import SectionHeader from "@/components/common/SectionHeader";
+import Categories from "@/components/menu/Categories";
+import SearchBar from "@/components/common/SearchBar";
+import ContainerBox from "@/components/common/ContainerBox";
+import ItemContainer from "@/components/menu/ItemContainer";
+import ItemFormDialog from "@/components/menu/ItemFormDialog";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageShell from "@/components/common/PageShell";
+import { EmptyState, ErrorState, LoadingState } from "@/components/common/StateViews";
+import { useToast } from "@/components/common/Toast";
 import { getAllItems, deleteItem } from "@/services/itemService";
-import CategoryManagerDialog from "@/component/Menu/CategoryManagerDialog";
+import CategoryManagerDialog from "@/components/menu/CategoryManagerDialog";
 import { getCategories } from "@/services/categoryService";
-import { ICategory } from "@/interfaces/Category";
-import { IItem, ItemData } from "@/interfaces/Items";
+import { ICategory } from "@/types/category";
+import { IItem, ItemData } from "@/types/item";
 
 export default function Home() {
   const toast = useToast();

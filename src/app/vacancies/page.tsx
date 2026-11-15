@@ -1,17 +1,17 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import SectionHeader from "@/component/common/SectionHeader";
-import SearchBar from "@/component/common/SearchBar";
-import ContainerBox from "@/component/common/ContainerBox";
-import PageShell from "@/component/common/PageShell";
-import ConfirmDialog from "@/component/common/ConfirmDialog";
-import { EmptyState, ErrorState, LoadingState } from "@/component/common/StateViews";
-import { useToast } from "@/component/common/Toast";
-import JobCard from "@/component/vacancies/JobCard";
-import VacancyFormDialog from "@/component/vacancies/VacancyFormDialog";
+import SectionHeader from "@/components/common/SectionHeader";
+import SearchBar from "@/components/common/SearchBar";
+import ContainerBox from "@/components/common/ContainerBox";
+import PageShell from "@/components/common/PageShell";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState, ErrorState, LoadingState } from "@/components/common/StateViews";
+import { useToast } from "@/components/common/Toast";
+import JobCard from "@/components/vacancies/JobCard";
+import VacancyFormDialog from "@/components/vacancies/VacancyFormDialog";
 import { deleteVacancy, getAllVacancies } from "@/services/vacancyService";
-import { Vacancy } from "@/interfaces/vacancy";
+import { Vacancy } from "@/types/vacancy";
 
 export default function Vacancies() {
   const toast = useToast();

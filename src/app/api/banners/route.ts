@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
-import { BANNER_PAGE_KEYS } from '@/component/const/siteBanners';
+import { errorMessage } from '@/server/http';
+import { prisma, withLegacyId } from '@/server/prisma';
+import { BANNER_PAGE_KEYS } from '@/constants/siteBanners';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,9 +14,9 @@ export async function GET() {
       data[banner.page] = banner.images as string[];
     }
     return NextResponse.json({ success: true, data }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to fetch banners' },
+      { success: false, error: errorMessage(error, 'Failed to fetch banners') },
       { status: 500 }
     );
   }
@@ -43,9 +44,9 @@ export async function PUT(request: NextRequest) {
       { success: true, data: withLegacyId(banner), message: 'Banner saved successfully' },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to save banner' },
+      { success: false, error: errorMessage(error, 'Failed to save banner') },
       { status: 500 }
     );
   }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth';
+import { SESSION_COOKIE, verifySessionToken } from '@/server/auth';
 
 export const dynamic = 'force-dynamic';
 

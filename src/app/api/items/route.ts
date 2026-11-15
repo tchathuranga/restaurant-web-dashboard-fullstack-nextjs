@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
-import { getSubcategory } from '@/component/const/itemSubcategories';
-import { ensureCategoriesSeeded } from '@/lib/menuCategories';
+import { errorMessage } from '@/server/http';
+import { prisma, withLegacyId } from '@/server/prisma';
+import { getSubcategory } from '@/constants/itemSubcategories';
+import { ensureCategoriesSeeded } from '@/server/menuCategories';
 
 // GET all items or filter by category
 export async function GET(request: NextRequest) {
@@ -14,28 +15,19 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
-    const items = rows.map((row) => {
-      const plain = withLegacyId(row) as any;
-      // Older items have no stored subcategory; derive it the same way the website does
-      plain.subcategory = plain.subcategory || getSubcategory(plain.title, plain.category);
-      return plain;
-    });
+    // Older items have no stored subcategory; derive it the same way the website does
+    const items = rows.map((row) => ({
+      ...withLegacyId(row),
+      subcategory: row.subcategory || getSubcategory(row.title, row.category),
+    }));
 
     // Group items by category
-    const groupedData = items.reduce((acc: any, item: any) => {
-      const existingCategory = acc.find((cat: any) => cat.Category === item.category);
-
-      if (existingCategory) {
-        existingCategory.data.push(item);
-      } else {
-        acc.push({
-          Category: item.category,
-          data: [item],
-        });
-      }
-
-      return acc;
-    }, []);
+    const grouped = new Map<string, typeof items>();
+    for (const item of items) {
+      const group = grouped.get(item.category);
+      if (group) group.push(item);
+      else grouped.set(item.category, [item]);
+    }
 
     // Sort grouped data by the order set in the category manager (unknown names go last)
     const categories = await prisma.menuCategory.findMany({ orderBy: { order: 'asc' } });
@@ -43,7 +35,9 @@ export async function GET(request: NextRequest) {
       const index = categories.findIndex((c) => c.name === name);
       return index === -1 ? categories.length : index;
     };
-    const sortedData = groupedData.sort((a: any, b: any) => rank(a.Category) - rank(b.Category));
+    const sortedData = [...grouped.entries()]
+      .map(([Category, data]) => ({ Category, data }))
+      .sort((a, b) => rank(a.Category) - rank(b.Category));
 
     return NextResponse.json(
       {
@@ -52,11 +46,11 @@ export async function GET(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch items',
+        error: errorMessage(error, 'Failed to fetch items'),
       },
       { status: 500 }
     );
@@ -110,11 +104,11 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to create item',
+        error: errorMessage(error, 'Failed to create item'),
       },
       { status: 500 }
     );

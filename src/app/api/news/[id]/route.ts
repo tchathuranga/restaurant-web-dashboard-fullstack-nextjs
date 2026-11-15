@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, withLegacyId } from "@/lib/prisma";
-import { isNotFound } from "@/lib/apiErrors";
+import { prisma, withLegacyId } from "@/server/prisma";
+import { errorMessage, isNotFound } from '@/server/http';
 
 // GET single news by ID
 export async function GET(
@@ -21,9 +21,9 @@ export async function GET(
       { success: true, data: withLegacyId(newsItem) },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch news item" },
+      { success: false, error: errorMessage(error, "Failed to fetch news item") },
       { status: 500 },
     );
   }
@@ -41,7 +41,7 @@ export async function DELETE(
       { success: true, data: withLegacyId(deletedNews) },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json(
         { success: false, error: "News item not found" },
@@ -49,7 +49,7 @@ export async function DELETE(
       );
     }
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete news item" },
+      { success: false, error: errorMessage(error, "Failed to delete news item") },
       { status: 500 },
     );
   }
@@ -78,7 +78,7 @@ export async function PUT(
       { success: true, data: withLegacyId(updatedNews) },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json(
         { success: false, error: "News item not found" },
@@ -86,7 +86,7 @@ export async function PUT(
       );
     }
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to update news item" },
+      { success: false, error: errorMessage(error, "Failed to update news item") },
       { status: 500 },
     );
   }

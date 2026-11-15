@@ -1,4 +1,4 @@
-import RowActions from "@/component/common/RowActions";
+import RowActions from "@/components/common/RowActions";
 
 interface NewsContainerProps {
   title: string;

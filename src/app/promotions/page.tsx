@@ -1,8 +1,8 @@
 "use client"
 
-import PageShell from "@/component/common/PageShell";
-import SectionHeader from "@/component/common/SectionHeader";
-import ImageLibrary from "@/component/common/ImageLibrary";
+import PageShell from "@/components/common/PageShell";
+import SectionHeader from "@/components/common/SectionHeader";
+import ImageLibrary from "@/components/common/ImageLibrary";
 import { createPromotion, deletePromotion, getAllPromotions } from "@/services/promotionsService";
 import { uploadPromotionsImageToCloudinary } from "@/services/uploadService";
 

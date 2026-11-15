@@ -3,10 +3,10 @@
 import { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import SectionHeader from "@/component/common/SectionHeader";
-import PageShell from "@/component/common/PageShell";
-import BannerManager from "@/component/siteSettings/BannerManager";
-import BranchManager from "@/component/siteSettings/BranchManager";
+import SectionHeader from "@/components/common/SectionHeader";
+import PageShell from "@/components/common/PageShell";
+import BannerManager from "@/components/site-settings/BannerManager";
+import BranchManager from "@/components/site-settings/BranchManager";
 
 export default function SiteSettingsPage() {
   const [tab, setTab] = useState(0);

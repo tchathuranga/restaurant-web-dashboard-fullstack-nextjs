@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, withLegacyId } from "@/lib/prisma";
-import { isNotFound } from "@/lib/apiErrors";
+import { prisma, withLegacyId } from "@/server/prisma";
+import { errorMessage, isNotFound } from '@/server/http';
 
 // GET single vacancy by ID
 export async function GET(
@@ -23,9 +23,9 @@ export async function GET(
       { success: true, data: withLegacyId(vacancy) },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch vacancy" },
+      { success: false, error: errorMessage(error, "Failed to fetch vacancy") },
       { status: 500 },
     );
   }
@@ -45,7 +45,7 @@ export async function DELETE(
       { success: true, data: withLegacyId(vacancy), message: "Vacancy deleted successfully" },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json(
         { success: false, error: "Vacancy not found" },
@@ -53,7 +53,7 @@ export async function DELETE(
       );
     }
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete vacancy" },
+      { success: false, error: errorMessage(error, "Failed to delete vacancy") },
       { status: 500 },
     );
   }
@@ -77,7 +77,7 @@ export async function PUT(
       { success: true, data: withLegacyId(vacancy), message: "Vacancy updated successfully" },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json(
         { success: false, error: "Vacancy not found" },
@@ -85,7 +85,7 @@ export async function PUT(
       );
     }
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to update vacancy" },
+      { success: false, error: errorMessage(error, "Failed to update vacancy") },
       { status: 500 },
     );
   }

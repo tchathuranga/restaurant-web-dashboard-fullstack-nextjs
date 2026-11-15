@@ -2,7 +2,7 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface ToolbarButtonProps {
   onClick: () => void

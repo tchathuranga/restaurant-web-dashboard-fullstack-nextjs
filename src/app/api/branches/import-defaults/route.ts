@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
-import { DEFAULT_BRANCHES } from '@/component/const/defaultBranches';
+import { errorMessage } from '@/server/http';
+import { prisma, withLegacyId } from '@/server/prisma';
+import { DEFAULT_BRANCHES } from '@/constants/defaultBranches';
 
 // POST copy the website's built-in branches into the database so they can be edited.
 // Refuses when branches already exist so nothing is duplicated or overwritten.
@@ -21,9 +22,9 @@ export async function POST() {
       { success: true, data: data.map(withLegacyId), message: 'Branches imported successfully' },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to import branches' },
+      { success: false, error: errorMessage(error, 'Failed to import branches') },
       { status: 500 }
     );
   }

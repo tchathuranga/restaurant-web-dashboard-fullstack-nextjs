@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
+import { errorMessage } from '@/server/http';
+import { prisma, withLegacyId } from '@/server/prisma';
 
 // GET all news
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const news = await prisma.news.findMany({ orderBy: { createdAt: 'desc' } });
 
@@ -10,9 +11,9 @@ export async function GET(request: NextRequest) {
       { success: true, data: news.map(withLegacyId) },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to fetch news' },
+      { success: false, error: errorMessage(error, 'Failed to fetch news') },
       { status: 500 }
     );
   }
@@ -35,9 +36,9 @@ export async function POST(request: NextRequest) {
       { success: true, data: withLegacyId(newsItem) },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create news item' },
+      { success: false, error: errorMessage(error, 'Failed to create news item') },
       { status: 500 }
     );
   }
