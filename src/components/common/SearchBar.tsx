@@ -1,30 +1,37 @@
 import React from "react";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 interface SearchBarProps {
   searchValue?: string;
   onSearchChange: (value: string) => void;
   placeholder?: string;
+  className?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchValue, onSearchChange, placeholder = "Search here" }) => {
+// Search field with a clear button once something is typed
+const SearchBar: React.FC<SearchBarProps> = ({ searchValue = "", onSearchChange, placeholder = "Search here", className = "mb-6" }) => {
   return (
-    <div className="w-full flex justify-end my-4 mb-8 px-4">
-      <div className="relative w-full max-w-xl">
-        <input
-          type="text"
-          placeholder={placeholder}
-          aria-label={placeholder}
-          value={searchValue}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="sv-input rounded-full! pl-5 pr-11 shadow-sm text-ink placeholder-gray-400 text-base"
-        />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2">
-          <svg width="20" height="20" fill="none" viewBox="0 0 22 22">
-            <circle cx="10" cy="10" r="7" stroke="#c9a227" strokeWidth="2" />
-            <path d="M16 16L20 20" stroke="#c9a227" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </span>
-      </div>
+    <div className={`relative w-full ${className}`}>
+      <SearchRoundedIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gold" />
+      <input
+        type="search"
+        placeholder={placeholder}
+        aria-label={placeholder}
+        value={searchValue}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="sv-input rounded-full! py-3! pl-12! pr-11! text-base text-ink shadow-sm placeholder-gray-400 [&::-webkit-search-cancel-button]:hidden"
+      />
+      {searchValue && (
+        <button
+          type="button"
+          onClick={() => onSearchChange("")}
+          aria-label="Clear search"
+          className="absolute right-3 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full bg-cream text-ink-muted transition hover:bg-saffron hover:text-ivory"
+        >
+          <CloseRoundedIcon sx={{ fontSize: 16 }} />
+        </button>
+      )}
     </div>
   );
 };

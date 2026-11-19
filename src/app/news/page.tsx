@@ -69,7 +69,7 @@ export default function NewsFields() {
     <PageShell>
       <SectionHeader title="News" buttonLabel="Add news" onButtonClick={openAdd} />
 
-      <SearchBar searchValue={searchTerm} onSearchChange={setSearchTerm} placeholder="Search news by headline" />
+      <SearchBar searchValue={searchTerm} onSearchChange={setSearchTerm} placeholder="Search news by headline" className="mb-6 max-w-xl" />
 
       <ContainerBox>
         {loading ? (

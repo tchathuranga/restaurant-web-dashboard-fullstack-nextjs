@@ -8,35 +8,42 @@ interface CategoriesProps {
   counts?: Record<string, number>;
 }
 
+// Category filter. Wraps on wide screens and scrolls sideways on phones so it never takes over the page.
 const Categories = ({ categories, selectedCategory, onCategorySelect, counts }: CategoriesProps) => {
   return (
-    <div className="px-1 py-2 mb-4">
-      <div className="flex flex-wrap gap-2.5" role="tablist" aria-label="Menu categories">
-        {[{ _id: "all", name: "All" }, ...categories].map((i) => {
-          const active = selectedCategory === i.name;
-          return (
-            <button
-              key={i._id}
-              role="tab"
-              aria-selected={active}
-              onClick={() => onCategorySelect(i.name)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm sm:text-base transition border ${
-                active
-                  ? "bg-gradient-to-br from-saffron to-saffron-deep text-ivory border-saffron-deep shadow-md"
-                  : "bg-white text-ink border-gold/50 hover:bg-cream hover:border-gold"
-              }`}
-              type="button"
-            >
-              {i.name}
-              {counts && (
-                <span className={`text-xs rounded-full px-2 py-0.5 ${active ? "bg-white/25" : "bg-cream text-ink-muted"}`}>
-                  {counts[i.name] ?? 0}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+    <div
+      className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible"
+      role="tablist"
+      aria-label="Menu categories"
+    >
+      {[{ _id: "all", name: "All" }, ...categories].map((i) => {
+        const active = selectedCategory === i.name;
+        return (
+          <button
+            key={i._id}
+            role="tab"
+            aria-selected={active}
+            onClick={() => onCategorySelect(i.name)}
+            className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+              active
+                ? "border-saffron-deep bg-gradient-to-br from-saffron to-saffron-deep text-ivory shadow-md"
+                : "border-gold/45 bg-white text-ink hover:-translate-y-0.5 hover:border-gold hover:bg-cream"
+            }`}
+            type="button"
+          >
+            {i.name}
+            {counts && (
+              <span
+                className={`min-w-6 rounded-full px-1.5 py-0.5 text-center text-xs font-semibold ${
+                  active ? "bg-white/25" : "bg-cream text-ink-muted"
+                }`}
+              >
+                {counts[i.name] ?? 0}
+              </span>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 };

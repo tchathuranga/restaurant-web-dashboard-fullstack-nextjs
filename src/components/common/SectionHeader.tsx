@@ -1,37 +1,54 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+"use client";
+
+import { usePathname } from "next/navigation";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { useAppSelector } from "@/redux/store";
+import { findNavItem } from "@/constants/navigation";
 
 interface SectionHeaderProps {
-    title: string;
-    buttonLabel?: string;
-    onButtonClick?: () => void;
+  title: string;
+  buttonLabel?: string;
+  onButtonClick?: () => void;
 }
 
+function greeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
+
+// Page banner: icon, title, what the page controls on the website, and the page's main action
 const SectionHeader = ({ title, buttonLabel, onButtonClick }: SectionHeaderProps) => {
-    const authState = useSelector((state: RootState) => state.auth);
+  const pathname = usePathname();
+  const user = useAppSelector((state) => state.auth.user);
+  const nav = findNavItem(pathname);
 
-    return (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4 sm:px-6 py-5 mb-6 sv-panel">
-            <div>
-                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-amber-700 mb-1">Sri Vihar Admin</p>
-                <h2 className="text-3xl font-bold text-maroon">{title}</h2>
-                <p className="text-sm text-ink-muted mt-1">{`Hi, ${authState.user?.name || "User"}. Welcome back!`}</p>
-            </div>
-
-            {buttonLabel && (
-                <button
-                    onClick={onButtonClick}
-                    className="sv-btn-primary flex items-center justify-center gap-2 px-5 py-2.5 w-full sm:w-auto"
-                >
-                    <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
-                        <path d="M8 3.333v9.334M3.333 8h9.334" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    {buttonLabel}
-                </button>
-            )}
+  return (
+    <div className="sv-hero mb-6 flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:p-7">
+      <div className="flex items-start gap-4">
+        {nav && <div className="sv-hero-icon">{nav.icon}</div>}
+        <div className="min-w-0">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.28em] text-saffron-deep">
+            {greeting()}, {user?.name || user?.username || "there"}
+          </p>
+          <h1 className="text-3xl font-bold leading-tight text-maroon sm:text-4xl">{title}</h1>
+          {nav && <p className="mt-1 text-sm text-ink-muted">{nav.description}</p>}
         </div>
-    );
+      </div>
+
+      {buttonLabel && (
+        <button
+          type="button"
+          onClick={onButtonClick}
+          className="sv-btn-primary flex w-full items-center justify-center gap-1.5 px-5 py-3 sm:w-auto"
+        >
+          <AddRoundedIcon fontSize="small" />
+          {buttonLabel}
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default SectionHeader;
