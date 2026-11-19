@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, withLegacyId } from "@/lib/prisma";
-import { isNotFound } from "@/lib/apiErrors";
+import { prisma, withLegacyId } from "@/server/prisma";
+import { errorMessage, isNotFound } from '@/server/http';
 
 // GET single promotion by ID
 export async function GET(
@@ -20,9 +20,9 @@ export async function GET(
       { success: true, data: withLegacyId(promotionItem) },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch promotion" },
+      { success: false, error: errorMessage(error, "Failed to fetch promotion") },
       { status: 500 },
     );
   }
@@ -40,7 +40,7 @@ export async function DELETE(
       { success: true, message: "Promotion deleted successfully" },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) {
       return NextResponse.json(
         { success: false, error: "Promotion not found" },
@@ -48,7 +48,7 @@ export async function DELETE(
       );
     }
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete promotion" },
+      { success: false, error: errorMessage(error, "Failed to delete promotion") },
       { status: 500 },
     );
   }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useToast } from "@/component/common/Toast";
-import { LoadingState } from "@/component/common/StateViews";
-import { BANNER_PAGES } from "@/component/const/siteBanners";
+import { useToast } from "@/components/common/Toast";
+import { LoadingState } from "@/components/common/StateViews";
+import { BANNER_PAGES } from "@/constants/siteBanners";
 import { getBanners, saveBanner, uploadBannerImage } from "@/services/siteService";
 
 const sameImages = (a: string[], b: string[]) => a.length === b.length && a.every((url, i) => url === b[i]);

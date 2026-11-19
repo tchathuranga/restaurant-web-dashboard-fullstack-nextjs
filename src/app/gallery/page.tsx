@@ -1,9 +1,9 @@
 "use client";
 
-import PageShell from "@/component/common/PageShell";
-import SectionHeader from "@/component/common/SectionHeader";
-import ImageLibrary from "@/component/common/ImageLibrary";
-import { createGalleryItem, deleteGalleryItem, getAllGalleryItems } from "@/services/gallaryService";
+import PageShell from "@/components/common/PageShell";
+import SectionHeader from "@/components/common/SectionHeader";
+import ImageLibrary from "@/components/common/ImageLibrary";
+import { createGalleryItem, deleteGalleryItem, getAllGalleryItems } from "@/services/galleryService";
 import { uploadGalleryImageToCloudinary } from "@/services/uploadService";
 
 export default function Gallery() {

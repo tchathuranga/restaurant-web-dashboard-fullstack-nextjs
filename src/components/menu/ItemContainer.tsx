@@ -1,5 +1,5 @@
 import Image from "next/image";
-import RowActions from "@/component/common/RowActions";
+import RowActions from "@/components/common/RowActions";
 
 interface ItemContainerProps {
     image : string ;

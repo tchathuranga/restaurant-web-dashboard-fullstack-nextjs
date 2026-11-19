@@ -10,15 +10,16 @@ export interface BranchInput {
 }
 
 // Trims and checks the fields an admin can edit. Delivery links are optional but must be http(s) URLs.
-export function validateBranchBody(body: any): { value: BranchInput } | { error: string } {
+export function validateBranchBody(body: unknown): { value: BranchInput } | { error: string } {
+  const fields = (typeof body === 'object' && body !== null ? body : {}) as Record<string, unknown>;
   const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
   const value: BranchInput = {
-    name: text(body?.name),
-    address: text(body?.address),
-    hours: text(body?.hours),
-    phone: text(body?.phone),
-    uberUrl: text(body?.uberUrl),
-    pickmeUrl: text(body?.pickmeUrl),
+    name: text(fields.name),
+    address: text(fields.address),
+    hours: text(fields.hours),
+    phone: text(fields.phone),
+    uberUrl: text(fields.uberUrl),
+    pickmeUrl: text(fields.pickmeUrl),
   };
 
   if (!value.name || !value.address || !value.hours || !value.phone) {

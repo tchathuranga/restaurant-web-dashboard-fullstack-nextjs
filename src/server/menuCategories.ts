@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/prisma';
-import { ITEM_CATEGORIES } from '@/component/const/itemCategories';
-import { SUBCATEGORY_ORDER } from '@/component/const/itemSubcategories';
+import { prisma } from '@/server/prisma';
+import { ITEM_CATEGORIES } from '@/constants/itemCategories';
+import { SUBCATEGORY_ORDER } from '@/constants/itemSubcategories';
 
 export const CATEGORY_MAX = 50;
 export const SUBCATEGORY_MAX = 100;

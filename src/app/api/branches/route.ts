@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, withLegacyId } from '@/lib/prisma';
-import { validateBranchBody } from '@/lib/branchValidation';
+import { errorMessage } from '@/server/http';
+import { prisma, withLegacyId } from '@/server/prisma';
+import { validateBranchBody } from '@/server/branchValidation';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,9 +10,9 @@ export async function GET() {
   try {
     const rows = await prisma.branch.findMany({ orderBy: [{ order: 'asc' }, { createdAt: 'asc' }] });
     return NextResponse.json({ success: true, data: rows.map(withLegacyId) }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to fetch branches' },
+      { success: false, error: errorMessage(error, 'Failed to fetch branches') },
       { status: 500 }
     );
   }
@@ -34,9 +35,9 @@ export async function POST(request: NextRequest) {
       { success: true, data: withLegacyId(branch), message: 'Branch created successfully' },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create branch' },
+      { success: false, error: errorMessage(error, 'Failed to create branch') },
       { status: 500 }
     );
   }

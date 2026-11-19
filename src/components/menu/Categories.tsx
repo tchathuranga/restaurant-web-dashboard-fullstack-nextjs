@@ -1,4 +1,4 @@
-import { ICategory } from "@/interfaces/Category";
+import { ICategory } from "@/types/category";
 
 interface CategoriesProps {
   categories: ICategory[];

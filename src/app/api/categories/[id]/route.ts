@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { isNotFound } from '@/lib/apiErrors';
-import { CATEGORY_MAX, cleanName, isDuplicate } from '@/lib/menuCategories';
+import { prisma } from '@/server/prisma';
+import { errorMessage, isNotFound } from '@/server/http';
+import { CATEGORY_MAX, cleanName, isDuplicate } from '@/server/menuCategories';
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -20,12 +20,12 @@ export async function PUT(request: NextRequest, context: Context) {
       prisma.item.updateMany({ where: { category: existing.name }, data: { category: name } }),
     ]);
     return NextResponse.json({ success: true, data: { _id: id, name } });
-  } catch (error: any) {
+  } catch (error) {
     if (isDuplicate(error)) {
       return NextResponse.json({ success: false, error: 'A category with this name already exists' }, { status: 409 });
     }
     if (isNotFound(error)) return NextResponse.json({ success: false, error: 'Category not found' }, { status: 404 });
-    return NextResponse.json({ success: false, error: error.message || 'Failed to update category' }, { status: 500 });
+    return NextResponse.json({ success: false, error: errorMessage(error, 'Failed to update category') }, { status: 500 });
   }
 }
 
@@ -49,8 +49,8 @@ export async function DELETE(_request: NextRequest, context: Context) {
 
     await prisma.menuCategory.delete({ where: { id } });
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     if (isNotFound(error)) return NextResponse.json({ success: false, error: 'Category not found' }, { status: 404 });
-    return NextResponse.json({ success: false, error: error.message || 'Failed to delete category' }, { status: 500 });
+    return NextResponse.json({ success: false, error: errorMessage(error, 'Failed to delete category') }, { status: 500 });
   }
 }

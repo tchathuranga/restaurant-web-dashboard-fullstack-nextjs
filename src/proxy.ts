@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth';
+import { SESSION_COOKIE, verifySessionToken } from '@/server/auth';
 
 // Reachable without a session: the login page and the endpoints that create or clear one
 const PUBLIC_PATHS = new Set(['/login', '/api/auth/login', '/api/auth/logout']);

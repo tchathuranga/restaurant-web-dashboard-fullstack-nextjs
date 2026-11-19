@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Dialog from "@mui/material/Dialog";
-import RowActions from "@/component/common/RowActions";
-import ConfirmDialog from "@/component/common/ConfirmDialog";
-import { useToast } from "@/component/common/Toast";
-import { ICategory } from "@/interfaces/Category";
+import RowActions from "@/components/common/RowActions";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { useToast } from "@/components/common/Toast";
+import { ICategory } from "@/types/category";
 import {
   createCategory,
   createSubcategory,

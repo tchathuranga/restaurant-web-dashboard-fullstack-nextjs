@@ -1,6 +1,5 @@
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import RowActions from "@/component/common/RowActions";
+import RowActions from "@/components/common/RowActions";
 
 interface JobCardProps {
     title: string;

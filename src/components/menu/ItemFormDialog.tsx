@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
-import FormContainer from "@/component/common/FormContainer";
-import Field from "@/component/common/Field";
-import ImagePicker from "@/component/common/ImagePicker";
-import { useToast } from "@/component/common/Toast";
-import { ICategory } from "@/interfaces/Category";
-import { IItem } from "@/interfaces/Items";
+import FormContainer from "@/components/common/FormContainer";
+import Field from "@/components/common/Field";
+import ImagePicker from "@/components/common/ImagePicker";
+import { useToast } from "@/components/common/Toast";
+import { ICategory } from "@/types/category";
+import { IItem } from "@/types/item";
 import { createItem, updateItem } from "@/services/itemService";
 import { uploadMenuImageToCloudinary } from "@/services/uploadService";
 
@@ -80,8 +80,8 @@ const ItemFormDialog = ({ open, item, categories, defaultCategory, onClose, onSa
       toast.success(item?._id ? `"${payload.title}" updated` : `"${payload.title}" added to the menu`);
       onSaved();
       onClose();
-    } catch (err: any) {
-      toast.error(err.message || "Something went wrong. Please try again");
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : "Something went wrong. Please try again");
     } finally {
       setSaving(false);
     }

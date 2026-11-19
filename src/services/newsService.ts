@@ -1,91 +1,15 @@
-import { News } from "@/interfaces/News";
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
+import { News } from '@/types/news';
+import { DELETE, jsonBody, request } from '@/services/apiClient';
 
 const BASE_URL = '/api/news';
 
-// GET all news
-export async function getAllNews(): Promise<ApiResponse<News[]>> {
-  try {
-    const response = await fetch(BASE_URL);
-    return response.json();
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to fetch news',
-    };
-  }
-}
+export const getAllNews = () => request<News[]>(BASE_URL);
 
-// GET single news
-export async function getNewsById(id: string): Promise<ApiResponse<News>> {
-  try {
-    const response = await fetch(`${BASE_URL}/${id}`);
-    return response.json();
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to fetch news',
-    };
-  }
-}
+export const getNewsById = (id: string) => request<News>(`${BASE_URL}/${id}`);
 
-// POST create news
-export async function createNews(news: Omit<News, '_id'>): Promise<ApiResponse<News>> {
-  try {
-    console.log("Creating news:", news);
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(news),
-    });
-    return response.json();
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to create news',
-    };
-  }
-}
+export const createNews = (news: Omit<News, '_id'>) => request<News>(BASE_URL, jsonBody('POST', news));
 
-// PUT update news
-export async function updateNews(id: string, news: Omit<News, '_id'>): Promise<ApiResponse<News>> {
-  try {
-    console.log("Updating news:", news);
-    const response = await fetch(`${BASE_URL}/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },  
-        body: JSON.stringify(news),
-      });
-    return response.json();
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to update news',
-    };
-  } 
-}
+export const updateNews = (id: string, news: Omit<News, '_id'>) =>
+  request<News>(`${BASE_URL}/${id}`, jsonBody('PUT', news));
 
-// DELETE news
-export async function deleteNews(id: string): Promise<ApiResponse<null>> {
-  try {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: 'DELETE',
-    });
-    return response.json();
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to delete news',
-    };
-  }
-}
+export const deleteNews = (id: string) => request<null>(`${BASE_URL}/${id}`, DELETE);

@@ -2,13 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
-import FormContainer from "@/component/common/FormContainer";
-import Field from "@/component/common/Field";
-import RowActions from "@/component/common/RowActions";
-import ConfirmDialog from "@/component/common/ConfirmDialog";
-import { EmptyState, ErrorState, LoadingState } from "@/component/common/StateViews";
-import { useToast } from "@/component/common/Toast";
-import { IBranch } from "@/interfaces/branch";
+import FormContainer from "@/components/common/FormContainer";
+import Field from "@/components/common/Field";
+import RowActions from "@/components/common/RowActions";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState, ErrorState, LoadingState } from "@/components/common/StateViews";
+import { useToast } from "@/components/common/Toast";
+import { IBranch } from "@/types/branch";
 import {
   getBranches,
   createBranch,
