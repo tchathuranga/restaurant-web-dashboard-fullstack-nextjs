@@ -7,6 +7,7 @@
   --color-saffron: #e85d04;
   --color-saffron-deep: #c2410c;
   --color-gold: #c9a227;
+  --color-gold-soft: #e8c36a;
   --color-maroon: #6b1d2a;
   --color-maroon-deep: #4a1220;
   --color-peacock: #0f5c5b;
@@ -84,4 +85,190 @@ h3 {
 .sv-btn-primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(194, 65, 12, 0.3);
+}
+
+/* ---------- Layout and navigation ---------- */
+
+::selection {
+  background: #e8c36a;
+  color: #4a1220;
+}
+
+html {
+  scrollbar-color: #c9a227 #f8ede3;
+}
+
+.sv-sidebar-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 195, 106, 0.55), transparent);
+}
+
+.sv-nav-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.9rem;
+  color: rgba(255, 248, 240, 0.78);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.sv-nav-item:hover {
+  background: rgba(255, 248, 240, 0.08);
+  color: #fff8f0;
+  transform: translateX(2px);
+}
+
+.sv-nav-icon {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 248, 240, 0.07);
+  color: #e8c36a;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sv-nav-icon svg {
+  font-size: 1.2rem;
+}
+
+.sv-nav-item-active {
+  background: linear-gradient(135deg, #e85d04, #c2410c);
+  color: #fff8f0;
+  font-weight: 600;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+.sv-nav-item-active:hover {
+  background: linear-gradient(135deg, #e85d04, #c2410c);
+  transform: none;
+}
+
+.sv-nav-item-active .sv-nav-icon {
+  background: rgba(255, 248, 240, 0.2);
+  color: #fff8f0;
+}
+
+/* Gold marker on the left edge of the current page */
+.sv-nav-item-active::before {
+  content: "";
+  position: absolute;
+  left: -0.75rem;
+  top: 22%;
+  bottom: 22%;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: #e8c36a;
+}
+
+/* ---------- Page header ---------- */
+
+.sv-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(232, 93, 4, 0.12), transparent 45%),
+    radial-gradient(circle at 0% 100%, rgba(232, 195, 106, 0.2), transparent 40%),
+    linear-gradient(135deg, #fffdf8 0%, #fff1d6 100%);
+  box-shadow: 0 12px 30px rgba(74, 18, 32, 0.08);
+}
+
+/* Faint mandala in the corner of each page header */
+.sv-hero::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background:
+    repeating-conic-gradient(from 0deg, rgba(201, 162, 39, 0.16) 0deg 6deg, transparent 6deg 18deg);
+  -webkit-mask: radial-gradient(circle, transparent 28%, #000 29%, #000 70%, transparent 71%);
+  mask: radial-gradient(circle, transparent 28%, #000 29%, #000 70%, transparent 71%);
+  pointer-events: none;
+}
+
+.sv-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sv-hero-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #6b1d2a, #4a1220);
+  color: #e8c36a;
+  box-shadow: 0 10px 20px rgba(74, 18, 32, 0.25);
+}
+
+.sv-hero-icon svg {
+  font-size: 1.7rem;
+}
+
+/* ---------- Cards and controls ---------- */
+
+.sv-card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.sv-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: #c9a227;
+  box-shadow: 0 18px 36px rgba(74, 18, 32, 0.14);
+}
+
+.sv-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  background: #fffdf8;
+  box-shadow: 0 6px 16px rgba(74, 18, 32, 0.05);
+}
+
+.sv-stat-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.85rem;
+}
+
+.sv-btn-primary:active,
+.sv-nav-item:active {
+  transform: scale(0.97);
+}
+
+.sv-btn-primary:disabled {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-nav-item,
+  .sv-card-hover,
+  .sv-btn-primary {
+    transition: none;
+  }
+
+  .sv-card-hover:hover,
+  .sv-nav-item:hover {
+    transform: none;
+  }
 }

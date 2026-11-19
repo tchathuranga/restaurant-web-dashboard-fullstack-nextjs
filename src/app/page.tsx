@@ -13,6 +13,8 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/common/StateV
 import { useToast } from "@/components/common/Toast";
 import { getAllItems, deleteItem } from "@/services/itemService";
 import CategoryManagerDialog from "@/components/menu/CategoryManagerDialog";
+import MenuStats from "@/components/menu/MenuStats";
+import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import { getCategories } from "@/services/categoryService";
 import { ICategory } from "@/types/category";
 import { IItem, ItemData } from "@/types/item";
@@ -110,24 +112,33 @@ export default function Home() {
         onButtonClick={openAdd}
       />
 
-      <div className="flex justify-end px-1 -mt-2 mb-2">
-        <button
-          type="button"
-          onClick={() => setCategoriesOpen(true)}
-          className="px-4 py-2 rounded-xl border border-maroon text-maroon text-sm font-semibold hover:bg-maroon hover:text-ivory transition"
-        >
-          Manage categories
-        </button>
+      {!loading && !error && <MenuStats dishCount={counts.All} categories={categories} />}
+
+      <div className="sv-panel mb-6 p-4 sm:p-5">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <SearchBar
+            searchValue={searchTerm}
+            onSearchChange={setSearchTerm}
+            placeholder="Search dishes by name"
+            className="sm:flex-1"
+          />
+          <button
+            type="button"
+            onClick={() => setCategoriesOpen(true)}
+            className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-maroon/70 px-4 py-2.5 text-sm font-semibold text-maroon transition hover:bg-maroon hover:text-ivory"
+          >
+            <TuneRoundedIcon fontSize="small" />
+            Manage categories
+          </button>
+        </div>
+
+        <Categories
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onCategorySelect={setSelectedCategory}
+          counts={counts}
+        />
       </div>
-
-      <Categories
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategorySelect={setSelectedCategory}
-        counts={counts}
-      />
-
-      <SearchBar searchValue={searchTerm} onSearchChange={setSearchTerm} placeholder="Search dishes by name" />
 
       <ContainerBox>
         {loading ? (
@@ -143,7 +154,11 @@ export default function Home() {
         ) : (
           visibleGroups.map((group) => (
             <div key={group.Category}>
-              <h2 className="text-2xl font-bold text-maroon pb-3 px-1">{group.Category}</h2>
+              <div className="mb-4 flex items-center gap-3 px-1">
+                <h2 className="text-2xl font-bold text-maroon">{group.Category}</h2>
+                <span className="rounded-full bg-cream px-2.5 py-0.5 text-xs font-semibold text-ink-muted">{group.data.length}</span>
+                <span className="h-px flex-1 bg-gradient-to-r from-gold/50 to-transparent" />
+              </div>
 
               {sortSubcategories(
                 group.Category,
@@ -161,6 +176,7 @@ export default function Home() {
                           key={item._id}
                           image={item.image}
                           title={item.title}
+                          price={item.price}
                           onDelete={() => setDeleteTarget(item)}
                           onUpdate={() => openEdit(item)}
                         />

@@ -69,7 +69,7 @@ export default function Vacancies() {
     <PageShell>
       <SectionHeader title="Vacancies" buttonLabel="Add vacancy" onButtonClick={openAdd} />
 
-      <SearchBar searchValue={searchTerm} onSearchChange={setSearchTerm} placeholder="Search vacancies by title" />
+      <SearchBar searchValue={searchTerm} onSearchChange={setSearchTerm} placeholder="Search vacancies by title" className="mb-6 max-w-xl" />
 
       <ContainerBox>
         {loading ? (
